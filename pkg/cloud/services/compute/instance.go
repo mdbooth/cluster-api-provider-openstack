@@ -28,6 +28,7 @@ import (
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/extensions/bootfromvolume"
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/extensions/keypairs"
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/extensions/schedulerhints"
+	"github.com/gophercloud/gophercloud/openstack/compute/v2/extensions/servergroups"
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/flavors"
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/servers"
 	"github.com/gophercloud/gophercloud/openstack/imageservice/v2/images"
@@ -248,6 +249,11 @@ func (s *Service) createInstanceImpl(eventObject runtime.Object, openStackCluste
 		return nil, err
 	}
 
+	serverGroupID, err := s.getServerGroupID(instanceSpec.ServerGroupID, instanceSpec.ServerGroup)
+	if err != nil {
+		return nil, fmt.Errorf("error getting server group ID: %v", err)
+	}
+
 	// Ensure we delete the ports we created if we haven't created the server.
 	defer func() {
 		if server != nil {
@@ -323,7 +329,7 @@ func (s *Service) createInstanceImpl(eventObject runtime.Object, openStackCluste
 		}
 	}
 
-	serverCreateOpts = applyServerGroupID(serverCreateOpts, instanceSpec.ServerGroupID)
+	serverCreateOpts = applyServerGroupID(serverCreateOpts, serverGroupID)
 
 	server, err = s.getComputeClient().CreateServer(keypairs.CreateOptsExt{
 		CreateOptsBuilder: serverCreateOpts,
@@ -594,6 +600,49 @@ func (s *Service) getImageID(imageUUID, imageName string) (string, error) {
 	}
 
 	return "", nil
+}
+
+func (s *Service) getServerGroupID(serverGroupID string, serverGroupFilter *infrav1.ServerGroupFilter) (string, error) {
+	if serverGroupFilter == nil {
+		return serverGroupID, nil
+	}
+
+	if serverGroupFilter.ID != "" {
+		return serverGroupFilter.ID, nil
+	}
+
+	// otherwise fallback to looking up by name, which is slower
+	serverGroup, err := s.getServerGroupByName(serverGroupFilter.Name)
+	if err != nil {
+		return "", err
+	}
+
+	return serverGroup.ID, nil
+}
+
+func (s *Service) getServerGroupByName(serverGroupName string) (*servergroups.ServerGroup, error) {
+	allServerGroups, err := s.getComputeClient().ListServerGroups()
+	if err != nil {
+		return nil, err
+	}
+
+	serverGroups := []servergroups.ServerGroup{}
+
+	for _, serverGroup := range allServerGroups {
+		if serverGroupName == serverGroup.Name {
+			serverGroups = append(serverGroups, serverGroup)
+		}
+	}
+
+	switch len(serverGroups) {
+	case 0:
+		return nil, fmt.Errorf("no server group with name %s could be found", serverGroupName)
+	case 1:
+		return &serverGroups[0], nil
+	default:
+		// this will never happen due to duplicate IDs, only duplicate names, so our error message is worded accordingly
+		return nil, fmt.Errorf("too many server groups with name %s were found", serverGroupName)
+	}
 }
 
 // GetManagementPort returns the port which is used for management and external

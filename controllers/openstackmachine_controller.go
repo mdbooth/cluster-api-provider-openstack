@@ -463,7 +463,8 @@ func machineToInstanceSpec(openStackCluster *infrav1.OpenStackCluster, machine *
 		ConfigDrive:            openStackMachine.Spec.ConfigDrive != nil && *openStackMachine.Spec.ConfigDrive,
 		RootVolume:             openStackMachine.Spec.RootVolume,
 		AdditionalBlockDevices: openStackMachine.Spec.AdditionalBlockDevices,
-		ServerGroupID:          openStackMachine.Spec.ServerGroupID,
+		ServerGroupID:          openStackMachine.Spec.ServerGroupID, //nolint:staticcheck
+		ServerGroup:            openStackMachine.Spec.ServerGroup,
 		Trunk:                  openStackMachine.Spec.Trunk,
 	}
 

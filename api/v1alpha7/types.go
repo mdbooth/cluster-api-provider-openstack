@@ -215,6 +215,11 @@ type AdditionalBlockDevice struct {
 	Storage BlockDeviceStorage `json:"storage"`
 }
 
+type ServerGroupFilter struct {
+	ID   string `json:"id,omitempty"`
+	Name string `json:"name,omitempty"`
+}
+
 // BlockDeviceType defines the type of block device to create.
 type BlockDeviceType string
 

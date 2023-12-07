@@ -1969,9 +1969,20 @@ spec:
                                       type: string
                                   type: object
                                 type: array
-                              serverGroupID:
+                              serverGroup:
                                 description: The server group to assign the machine
-                                  to
+                                  to.
+                                properties:
+                                  id:
+                                    type: string
+                                  name:
+                                    type: string
+                                type: object
+                              serverGroupID:
+                                description: "The uuid of the server group to assign
+                                  the machine to. \n Deprecated: Use serverGroup instead.
+                                  serverGroupID will be silently ignored if serverGroup
+                                  is set."
                                 type: string
                               serverMetadata:
                                 additionalProperties:
