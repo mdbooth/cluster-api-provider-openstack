@@ -218,7 +218,7 @@ func TestService_getServerGroupID(t *testing.T) {
 			}
 			tt.expect(mockScopeFactory.ComputeClient.EXPECT())
 
-			got, err := s.getServerGroupID(tt.serverGroupID, tt.serverGroupFilter)
+			got, err := s.GetServerGroupID(tt.serverGroupID, tt.serverGroupFilter)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Service.getServerGroupID() error = %v, wantErr %v", err, tt.wantErr)
 				return

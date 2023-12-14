@@ -45,7 +45,6 @@ type InstanceSpec struct {
 	RootVolume             *infrav1.RootVolume
 	AdditionalBlockDevices []infrav1.AdditionalBlockDevice
 	ServerGroupID          string
-	ServerGroup            *infrav1.ServerGroupFilter
 	Trunk                  bool
 	Tags                   []string
 	SecurityGroups         []infrav1.SecurityGroupFilter

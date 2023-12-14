@@ -90,11 +90,6 @@ type OpenStackMachineSpec struct {
 	// +optional
 	AdditionalBlockDevices []AdditionalBlockDevice `json:"additionalBlockDevices,omitempty"`
 
-	// The uuid of the server group to assign the machine to.
-	//
-	// Deprecated: Use serverGroup instead. serverGroupID will be silently ignored if serverGroup is set.
-	ServerGroupID string `json:"serverGroupID,omitempty"`
-
 	// The server group to assign the machine to.
 	// +optional
 	ServerGroup *ServerGroupFilter `json:"serverGroup,omitempty"`
@@ -116,6 +111,9 @@ type OpenStackMachineStatus struct {
 	// InstanceState is the state of the OpenStack instance for this machine.
 	// +optional
 	InstanceState *InstanceState `json:"instanceState,omitempty"`
+
+	// ReferencedResources contains resolved references to resources that the machine depends on.
+	ReferencedResources ReferencedMachineResources `json:"referencedResources,omitempty"`
 
 	FailureReason *errors.MachineStatusError `json:"failureReason,omitempty"`
 
