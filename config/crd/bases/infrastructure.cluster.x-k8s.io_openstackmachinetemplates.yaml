@@ -1301,18 +1301,8 @@ spec:
                               type: string
                           type: object
                         type: array
-                      serverGroup:
-                        description: The server group to assign the machine to.
-                        properties:
-                          id:
-                            type: string
-                          name:
-                            type: string
-                        type: object
                       serverGroupID:
-                        description: "The uuid of the server group to assign the machine
-                          to. \n Deprecated: Use serverGroup instead. serverGroupID
-                          will be silently ignored if serverGroup is set."
+                        description: The server group to assign the machine to
                         type: string
                       serverMetadata:
                         additionalProperties:

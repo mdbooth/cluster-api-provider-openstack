@@ -61,7 +61,6 @@ func restorev1alpha8MachineSpec(previous *infrav1.OpenStackMachineSpec, dst *inf
 	// We restore the whole Ports since they are anyway immutable.
 	dst.Ports = previous.Ports
 	dst.AdditionalBlockDevices = previous.AdditionalBlockDevices
-	dst.ServerGroup = previous.ServerGroup
 }
 
 func restorev1alpha8Bastion(previous **infrav1.Bastion, dst **infrav1.Bastion) {

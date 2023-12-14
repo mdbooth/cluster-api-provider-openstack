@@ -90,8 +90,14 @@ type OpenStackMachineSpec struct {
 	// +optional
 	AdditionalBlockDevices []AdditionalBlockDevice `json:"additionalBlockDevices,omitempty"`
 
-	// The server group to assign the machine to
+	// The uuid of the server group to assign the machine to.
+	//
+	// Deprecated: Use serverGroup instead. serverGroupID will be silently ignored if serverGroup is set.
 	ServerGroupID string `json:"serverGroupID,omitempty"`
+
+	// The server group to assign the machine to.
+	// +optional
+	ServerGroup *ServerGroupFilter `json:"serverGroup,omitempty"`
 
 	// IdentityRef is a reference to a identity to be used when reconciling this cluster
 	// +optional
